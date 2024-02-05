@@ -1,21 +1,26 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 
+	"github.com/chromedp/cdproto/page"
+	"github.com/chromedp/chromedp"
 	"github.com/gocolly/colly/v2"
 )
 
 func main() {
 	var targetURL string
-	var scrapeHTML, scrapeLinks bool
+	var scrapeHTML, scrapeLinks, captureScreenshot bool
 
 	flag.StringVar(&targetURL, "url", "", "Web sitesinin URL'si")
 	flag.BoolVar(&scrapeHTML, "html", false, "HTML içeriğini çek")
 	flag.BoolVar(&scrapeLinks, "links", false, "Linkleri çek")
+	flag.BoolVar(&captureScreenshot, "screenshot", false, "Sayfa görüntüsü al")
 	flag.Parse()
 
 	if targetURL == "" {
@@ -38,6 +43,21 @@ func main() {
 		})
 	}
 
+	if captureScreenshot {
+		msl, fln := chromedp.NewContext(context.Background(), chromedp.WithDebugf(log.Printf))
+		defer fln()
+
+		var screenshot []byte
+		if err := chromedp.Run(msl, captureScreenshotTask(targetURL, &screenshot)); err != nil {
+			log.Fatal(err)
+		}
+
+		screenshotFilename := "screenshot.png"
+		if err := ioutil.WriteFile(screenshotFilename, screenshot, 0644); err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	c.OnError(func(r *colly.Response, err error) {
 		log.Println("Hata:", err)
 	})
@@ -46,5 +66,16 @@ func main() {
 	if err != nil {
 		fmt.Println("URL'yi ziyaret ederken bir hata oluştu:", err)
 		os.Exit(1)
+	}
+}
+
+func captureScreenshotTask(url string, screenshot *[]byte) chromedp.Tasks {
+	var err error
+	return chromedp.Tasks{
+		chromedp.Navigate(url),
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			*screenshot, err = page.CaptureScreenshot().WithQuality(90).Do(ctx)
+			return err
+		}),
 	}
 }

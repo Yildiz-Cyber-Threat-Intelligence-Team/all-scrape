@@ -4,14 +4,7 @@
 
 # Şuan Yapım Aşamasında
 
-adsjşakjdajdkasldjakdjlkdias,add
-dgdgdfgd
-gdfg
-dg
-dgd
-gd
-gdf
-gfdhfdgkşdflkgşldfkgşdfkgşldkşglkdfşlgklşdfkgldşf
+Web scraper (web tarayıcı) bir yazılım veya araçtır ve genellikle bir bilgisayar programı olarak kullanılır. Temel amacı, internet üzerindeki web sayfalarından veri çekmek veya toplamaktır. Web scraper'lar, belirli bir web sitesinden, birden çok web sitesinden veya belirli bir web sayfasındaki belirli bilgilerden veri çekme yeteneğine sahiptir.
 
 
 # Currently Under Construction

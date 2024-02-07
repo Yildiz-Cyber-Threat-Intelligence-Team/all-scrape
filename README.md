@@ -7,6 +7,7 @@ Kullanım Kılavuzu:
 go run main.go -url <url> https://example.com -screenshot
 
 go run main.go -url <url> https://example.com -html
+
 go run main.go -url <url> https://example.com -links
 
 
@@ -17,6 +18,7 @@ go run main.go -url <url> https://example.com -links
 User Guide:
 
 go run main.go -url <url> https://example.com -screenshot
+
 go run main.go -url <url> https://example.com -html
 
 go run main.go -url <url> https://example.com -links

@@ -7,7 +7,9 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
 	"github.com/gocolly/colly/v2"
@@ -73,6 +75,30 @@ func captureScreenshotTask(url string, screenshot *[]byte) chromedp.Tasks {
 	var err error
 	return chromedp.Tasks{
 		chromedp.Navigate(url),
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			headers := map[string]interface{}{
+				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.9999.999 Safari/537.36",
+			}
+			err = chromedp.ActionFunc(func(ctx context.Context) error {
+				return network.Enable().Do(ctx)
+			}).Do(ctx)
+			if err != nil {
+				return err
+			}
+			err = chromedp.ActionFunc(func(ctx context.Context) error {
+				return network.SetExtraHTTPHeaders(headers).Do(ctx)
+			}).Do(ctx)
+			if err != nil {
+				return err
+			}
+
+			err = chromedp.Sleep(90 * time.Second).Do(ctx)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		}),
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			*screenshot, err = page.CaptureScreenshot().WithQuality(90).Do(ctx)
 			return err

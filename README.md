@@ -17,8 +17,8 @@ Web scraper is a software or tool typically used as a computer program. Its prim
 
 User Guide:
 
-´go run main.go -url <url> https://example.com -screenshot´
+go run main.go -url <url> https://example.com -screenshot
 
-´go run main.go -url <url> https://example.com -html´
+go run main.go -url <url> https://example.com -html
 
-´go run main.go -url <url> https://example.com -links´
+go run main.go -url <url> https://example.com -links

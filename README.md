@@ -4,17 +4,13 @@ Web scraper (web tarayıcı) bir yazılım veya araçtır ve genellikle bir bilg
 
 Kullanım Kılavuzu:
 
-```
-go run main.go -url <url> -screenshot
-```
-```
-go run main.go -url <url> -html
-```
-```
-go run main.go -url <url> -links
-```
+go run main.go -url <url> https://example.com -screenshot
 
-Çektiğiniz veriler otomatik olarak log dosyalarına kaydedilecektir.
+go run main.go -url <url> https://example.com -html
+
+go run main.go -url <url> https://example.com -links
+
+
 
 
 # Currently Under Construction
@@ -22,23 +18,9 @@ go run main.go -url <url> -links
 Web scraper is a software or tool typically used as a computer program. Its primary purpose is to extract or collect data from web pages on the internet. Web scrapers have the ability to pull data from a specific website, multiple websites, or specific information on a particular web page.
 
 User Guide:
-<<<<<<< HEAD
 
 go run main.go -url <url> https://example.com -screenshot
 
 go run main.go -url <url> https://example.com -html
 
 go run main.go -url <url> https://example.com -links
-
-The data you capture will be automatically saved in log files.
-=======
-```
-go run main.go -url <url> -screenshot
-```
-```
-go run main.go -url <url> -html
-```
-```
-go run main.go -url <url> -links
-```
->>>>>>> e82400480e6689fd927e05455401a084772b5814

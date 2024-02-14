@@ -41,4 +41,4 @@ go run main.go -url <url> -html
 ```
 go run main.go -url <url> -links
 ```
->>>>>>> e82400480e6689fd927e05455401a084772b5814
+The data you capture will be automatically saved in log files.

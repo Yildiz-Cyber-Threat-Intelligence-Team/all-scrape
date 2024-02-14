@@ -4,12 +4,15 @@ Web scraper (web tarayıcı) bir yazılım veya araçtır ve genellikle bir bilg
 
 Kullanım Kılavuzu:
 
-go run main.go -url <url> https://example.com -screenshot
-
-go run main.go -url <url> https://example.com -html
-
-go run main.go -url <url> https://example.com -links
-
+```
+go run main.go -url <url> -screenshot
+```
+```
+go run main.go -url <url> -html
+```
+```
+go run main.go -url <url> -links
+```
 
 
 
@@ -19,8 +22,12 @@ Web scraper is a software or tool typically used as a computer program. Its prim
 
 User Guide:
 
-go run main.go -url <url> https://example.com -screenshot
-
-go run main.go -url <url> https://example.com -html
-
-go run main.go -url <url> https://example.com -links
+```
+go run main.go -url <url> -screenshot
+```
+```
+go run main.go -url <url> -html
+```
+```
+go run main.go -url <url> -links
+```

@@ -15,10 +15,10 @@ go run main.go -url <url> https://example.com -links
 
 Web scraper is a software or tool typically used as a computer program. Its primary purpose is to extract or collect data from web pages on the internet. Web scrapers have the ability to pull data from a specific website, multiple websites, or specific information on a particular web page.
 
-´´´User Guide:
+User Guide:
 
 go run main.go -url <url> https://example.com -screenshot
 
 go run main.go -url <url> https://example.com -html
 
-go run main.go -url <url> https://example.com -links´´´
+go run main.go -url <url> https://example.com -links

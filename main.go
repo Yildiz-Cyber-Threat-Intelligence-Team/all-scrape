@@ -9,13 +9,49 @@ import (
 	"os"
 	"time"
 
-	"github.com/chromedp/cdproto/network"
-	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
+	"github.com/common-nighthawk/go-figure"
 	"github.com/gocolly/colly/v2"
 )
 
 func main() {
+
+	asciiArt :=
+		`                                                                                                                                        
+                  
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⣿⣿⠛⠛⣛⣿⣿⣛⠛⢻⡿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⢛⣫⡅⢠⣾⣿⣿⣿⠀⣿⣿⣿⡏⣠⠸⣿⠆⣶⣾⣿⣿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⡀⠟⡀⠻⢿⣿⣿⣿⠀⣿⣿⣿⠁⣿⡆⢿⢠⣿⡿⢋⣴⣶⣦⠙⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⡿⠿⣿⣿⣿⣿⣿⣷⠀⣿⣷⠆⣈⣭⣭⣤⣬⣽⣤⣤⣭⣿⡀⣸⣿⠃⣾⣿⣿⣿⣰⣿⣿⡛⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣷⡐⣦⡍⠛⠿⠿⢛⣡⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡙⠻⠛⣩⣿⣿⠟⣡⣬⣽⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣷⠈⣴⣿⣂⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡛⠛⣡⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢨⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣱⣷⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋⣭⣭⣴⣿⣿⠈⣦⣙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠛⠛⣸⣿⠟⠙⣿⣿⡄⢿⣿⣷⣦⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢠⣿⣿⣿⠟⣰⡄⣿⣿⣿⣦⠻⣿⣿⡈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⣼⣿⠇⣴⣶⣿⣿⡏⢹⣿⣿⣧⣿⣿⣷⣬⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣿⣿⣧⣤⣤⣤⣤⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠙⣿⣿⡏⢸⣿⣿⣇⢸⣿⣿⡿⢸⣿⣿⠏⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣏⣭⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡌⢻⣧⠘⢿⣿⣿⡘⣿⡏⣴⡿⠛⢋⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠟⣻⣿⣿⣿
+⣿⣿⣿⣷⠿⡧⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢸⣿⣿⡆⣿⣿⣷⡘⢀⣿⡇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣴⡖⣾⣿⣿⣿
+⣿⣿⣿⣿⡟⣛⠝⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⢸⡇⢸⡟⢻⣷⣾⣿⢁⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢧⣄⣲⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⡖⡛⡘⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⢿⠈⠃⡌⠿⣿⠃⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣡⣔⢣⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣞⣏⢮⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⣰⣿⣶⣦⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⣯⣾⣹⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣧⡿⠕⡹⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣅⣄⢕⣽⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣫⡔⣹⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢟⢓⠔⣽⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣵⠊⡞⢍⣻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⢻⡝⣎⢼⣣⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣽⣡⠽⡷⣼⣿⢭⣟⡟⣻⢻⠛⢟⣏⣿⣇⡿⢣⣪⣯⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣯⣼⣼⣦⣿⣼⣿⣿⣬⣽⣾⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                                                         
+                                                                                                           
+	`
+	fmt.Println(asciiArt)
+
+	myFigure := figure.NewFigure("AKINCI - WEB - SCRAPPER V3", "", true)
+	myFigure.Print()
+
 	var targetURL string
 	var scrapeHTML, scrapeLinks, captureScreenshot bool
 
@@ -34,7 +70,10 @@ func main() {
 
 	if scrapeHTML {
 		c.OnHTML("html", func(e *colly.HTMLElement) {
-			fmt.Println(e.Text)
+			htmlContent := e.Text
+			fmt.Println(htmlContent)
+			writeToFile("websitesi.html", htmlContent)
+			log.Printf("HTML içeriği çekildi ve 'html_output.html' dosyasına kaydedildi.\n")
 		})
 	}
 
@@ -42,21 +81,14 @@ func main() {
 		c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 			link := e.Attr("href")
 			fmt.Println(link)
+			writeToFile("links.txt", link+"\n")
+			log.Printf("Linkler çekildi ve 'links_output.txt' dosyasına kaydedildi.\n")
 		})
 	}
 
 	if captureScreenshot {
-		msl, fln := chromedp.NewContext(context.Background(), chromedp.WithDebugf(log.Printf))
-		defer fln()
-
-		var screenshot []byte
-		if err := chromedp.Run(msl, captureScreenshotTask(targetURL, &screenshot)); err != nil {
-			log.Fatal(err)
-		}
-
-		screenshotFilename := "screenshot.png"
-		if err := ioutil.WriteFile(screenshotFilename, screenshot, 0644); err != nil {
-			log.Fatal(err)
+		if err := captureScreen(targetURL); err != nil {
+			log.Fatalf("Ekran görüntüsü alınırken hata oluştu: %v", err)
 		}
 	}
 
@@ -71,37 +103,34 @@ func main() {
 	}
 }
 
-func captureScreenshotTask(url string, screenshot *[]byte) chromedp.Tasks {
-	var err error
-	return chromedp.Tasks{
-		chromedp.Navigate(url),
-		chromedp.ActionFunc(func(ctx context.Context) error {
-			headers := map[string]interface{}{
-				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.9999.999 Safari/537.36",
-			}
-			err = chromedp.ActionFunc(func(ctx context.Context) error {
-				return network.Enable().Do(ctx)
-			}).Do(ctx)
-			if err != nil {
-				return err
-			}
-			err = chromedp.ActionFunc(func(ctx context.Context) error {
-				return network.SetExtraHTTPHeaders(headers).Do(ctx)
-			}).Do(ctx)
-			if err != nil {
-				return err
-			}
+func captureScreen(url string) error {
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
 
-			err = chromedp.Sleep(90 * time.Second).Do(ctx)
-			if err != nil {
-				return err
-			}
+	ctx, cancel = context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
 
-			return nil
-		}),
-		chromedp.ActionFunc(func(ctx context.Context) error {
-			*screenshot, err = page.CaptureScreenshot().WithQuality(90).Do(ctx)
-			return err
-		}),
+	var buf []byte
+	if err := chromedp.Run(ctx, chromedp.Navigate(url), chromedp.CaptureScreenshot(&buf)); err != nil {
+		return err
+	}
+
+	fileName := "screenshot.png"
+	if err := ioutil.WriteFile(fileName, buf, 0644); err != nil {
+		return err
+	}
+	fmt.Println("Ekran görüntüsü başarıyla kaydedildi:", fileName)
+	return nil
+}
+
+func writeToFile(filename string, data string) {
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("Dosya açılırken hata oluştu: %v", err)
+	}
+	defer f.Close()
+
+	if _, err := f.WriteString(data); err != nil {
+		log.Fatalf("Dosyaya yazılırken hata oluştu: %v", err)
 	}
 }

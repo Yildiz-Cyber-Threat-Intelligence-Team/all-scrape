@@ -10,6 +10,8 @@ go run main.go -url <url> https://example.com -html
 
 go run main.go -url <url> https://example.com -links
 
+Çektiğiniz veriler otomatik olarak log dosyalarına kaydedilecektir.
+
 
 # Currently Under Construction
 
@@ -22,3 +24,5 @@ go run main.go -url <url> https://example.com -screenshot
 go run main.go -url <url> https://example.com -html
 
 go run main.go -url <url> https://example.com -links
+
+The data you capture will be automatically saved in log files.
